@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Lens Effect</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Image container styling */
+    .image-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      overflow: hidden;
+      border: 2px solid #ccc;
+      margin: 20px auto;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    /* Lens styling */
+    .lens {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 2px solid #000;
+      border-radius: 50%;
+      pointer-events: none;
+      display: none;
+    }
+
+    /* Zoom effect on hover */
+    .image-container:hover .main-image {
+      transform: scale(2);
+    }
+
+    /* Carousel Item Image Styling */
+    .carousel-item img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+      .carousel-item img {
+        height: 400px; /* Smaller height for mobile */
+      }
+
+      /* Adjustments for overlay content */
+      .content {
+        padding: 10px; /* Less padding on mobile */
+      }
+
+      .content h1 {
+        font-size: 32px; /* Smaller heading size */
+      }
+
+      .content p {
+        font-size: 14px; /* Smaller paragraph size */
+      }
+
+      .btn-custom {
+        font-size: 14px; /* Smaller button font size */
+        padding: 8px 16px; /* Adjust padding for button */
+      }
+    }
+
+    /* Overlay Content Styling */
+    .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .content {
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .content h1 {
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .content p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .btn-custom {
+      background-color: #1e3a8a;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+    }
+
+    /* Other Styles */
+    .carousel-position {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="image-container">
+    <img src="https://th.bing.com/th/id/OIP.CSThJ0qpV3XKsURD0iKZ0AHaEK?w=1920&h=1080&rs=1&pid=ImgDetMain" alt="Sample Image" class="main-image">
+    <div class="lens"></div>
+  </div>
+
+  <script>
+    // Select elements
+    const imageContainer = document.querySelector('.image-container');
+    const lens = document.querySelector('.lens');
+    const mainImage = document.querySelector('.main-image');
+
+    // Add mousemove event to the container
+    imageContainer.addEventListener('mousemove', moveLens);
+    imageContainer.addEventListener('mouseenter', () => lens.style.display = 'block');
+    imageContainer.addEventListener('mouseleave', () => lens.style.display = 'none');
+
+    function moveLens(e) {
+      const rect = imageContainer.getBoundingClientRect();
+
+      // Calculate lens position
+      let x = e.clientX - rect.left - lens.offsetWidth / 2;
+      let y = e.clientY - rect.top - lens.offsetHeight / 2;
+
+      // Limit lens movement inside the image
+      const maxX = imageContainer.offsetWidth - lens.offsetWidth;
+      const maxY = imageContainer.offsetHeight - lens.offsetHeight;
+
+      if (x < 0) x = 0;
+      if (y < 0) y = 0;
+      if (x > maxX) x = maxX;
+      if (y > maxY) y = maxY;
+
+      // Move the lens
+      lens.style.left = `${x}px`;
+      lens.style.top = `${y}px`;
+
+      // Zoom image based on lens position
+      const zoomLevel = 2;
+      const bgX = -(x * zoomLevel);
+      const bgY = -(y * zoomLevel);
+
+      mainImage.style.transformOrigin = `${x + lens.offsetWidth / 2}px ${y + lens.offsetHeight / 2}px`;
+      mainImage.style.transform = `scale(2)`;
+    }
+    
+  </script>
+</body>
+</html>
